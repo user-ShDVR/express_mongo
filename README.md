@@ -27,4 +27,4 @@ npm i
 ```
 npm run start
 ```
-
+[Документация к бекенду](https://documenter.getpostman.com/view/22649118/2sA3Bj7tQ7#4dfd54a4-bfeb-4abf-a3bf-07c755bb065f)
