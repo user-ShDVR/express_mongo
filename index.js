@@ -4,6 +4,7 @@ import multer from 'multer';
 import cors from 'cors';
 import 'dotenv/config'
 import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 import { registerValidation, loginValidation, updateValidation } from './validations.js';
 
@@ -17,7 +18,6 @@ mongoose
   .catch((err) => console.log('DB error', err));
 
 const app = express();
-
 const storage = multer.diskStorage({
   destination: (_, __, cb) => {
     if (!fs.existsSync('uploads')) {
@@ -26,7 +26,10 @@ const storage = multer.diskStorage({
     cb(null, 'uploads');
   },
   filename: (_, file, cb) => {
-    cb(null, file.originalname);
+    const uniqueFilename = uuidv4();
+    const fileExtension = file.originalname.split('.').pop();
+    const filename = `${uniqueFilename}.${fileExtension}`;
+    cb(null, filename);
   },
 });
 
@@ -44,7 +47,7 @@ app.put('/users/update', checkAuth, updateValidation, handleValidationErrors, Us
 
 app.post('/upload', upload.single('image'), (req, res) => {
   res.json({
-    url: `/uploads/${req.file.originalname}`,
+    url: `http://localhost:4444/uploads/${req.file.filename}`,
   });
 });
 
