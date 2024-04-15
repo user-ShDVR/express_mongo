@@ -5,7 +5,7 @@ import cors from 'cors';
 import 'dotenv/config'
 import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
-
+import { createClient } from 'redis';
 import { registerValidation, loginValidation, updateValidation } from './validations.js';
 
 import { handleValidationErrors, checkAuth } from './utils/index.js';
@@ -16,6 +16,16 @@ mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log('DB ok'))
   .catch((err) => console.log('DB error', err));
+
+export const redisClient = createClient({
+  url: process.env.REDIS_URL  
+});
+
+redisClient.connect();
+
+redisClient.on('error', (err) => console.error('Ошибка подключения к Redis:', err));
+
+redisClient.on('connect', () => console.log('Успешно подключено к Redis.'));
 
 const app = express();
 const storage = multer.diskStorage({

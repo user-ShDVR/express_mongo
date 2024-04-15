@@ -1,15 +1,26 @@
+import { redisClient } from '../index.js';
 import UserModel from '../models/User.js';
 import bcrypt from 'bcrypt';
 
 export const getAllExceptCurrentUser = async (req, res) => {
-  try {
-    const users = await UserModel.find({ _id: { $ne: req.userId } }, { passwordHash: 0 });
+  const cacheKey = `users_except:${req.userId}`;
 
+  try {
+    const cachedUsers = await redisClient.get(cacheKey);
+    if (cachedUsers) {
+      return res.json(JSON.parse(cachedUsers));
+    }
+
+    const users = await UserModel.find({ _id: { $ne: req.userId } }, { passwordHash: 0 });
+    
     if (!users || users.length === 0) {
       return res.status(404).json({
         message: 'Пользователи, кроме текущего, не найдены',
       });
     }
+
+    await redisClient.setEx(cacheKey, 60, JSON.stringify(users));
+    console.log('Cached users: ', users.length);
 
     res.json(users);
   } catch (err) {
