@@ -40,7 +40,7 @@ app.post('/auth/login', loginValidation, handleValidationErrors, AuthController.
 app.post('/auth/register', registerValidation, handleValidationErrors, AuthController.register);
 app.get('/auth/me', checkAuth, AuthController.getMe);
 app.get('/users', checkAuth, UserController.getAllExceptCurrentUser);
-app.put('/users/update', checkAuth, UserController.update);
+app.put('/users/update', checkAuth, updateValidation, handleValidationErrors, UserController.update);
 
 app.post('/upload', upload.single('image'), (req, res) => {
   res.json({
