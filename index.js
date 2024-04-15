@@ -5,7 +5,7 @@ import cors from 'cors';
 import 'dotenv/config'
 import mongoose from 'mongoose';
 
-import { registerValidation, loginValidation } from './validations.js';
+import { registerValidation, loginValidation, updateValidation } from './validations.js';
 
 import { handleValidationErrors, checkAuth } from './utils/index.js';
 
